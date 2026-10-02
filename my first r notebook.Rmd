@@ -1,0 +1,105 @@
+---
+title: "R Notebook - Codigo para calcular Probabilidades con Distribuciones de Probabilidad discretas"
+output: html_notebook
+---
+
+Veamos los resultados de los ejemplos propuestos en clase, calculados con codigo R.
+
+Ej 1: Un jugador de Basketball hace 10 intentos al canasto desde el tiro libre en forma independiente, su efectividad desde el tiro libre es 60%. ¿Cúal es la probabilidad de que enceste exactamente ocho veces?
+
+
+```{r}
+dbinom(8,10,0.6)
+```
+_Respuesta_: La probabilidad de que el jugador enceste exactamente ocho veces es de el 12%
+
+---
+
+¿Cúal es la probabilidad de que enceste al menos cinco veces?
+
+```{r}
+1-sum(dbinom(0:4,10,0.6))
+```
+_Respuesta_: La probabilidad de que el jugador enceste al menos cinco veces es del 83.4%
+
+---
+
+La probabilidad de que cierta clase de componente sobreviva a una prueba de choque es 3/4.
+
+¿Cúal es la probabilidad de que sobrevivan exactamente dos de los 4 componentes que se prueban?
+
+```{r}
+dbinom(2,4,0.75)
+```
+_Respuesta_: La probabilidad de que sobrevivan exactamente dos de los cuatro componentes es del 21%
+
+---
+
+¿Cuantos componentes esperaríamos que sobrevivan en las 4 pruebas? es decir, ¿Cúal es el valor esperado de que los componentes sobrevivan en las 4 pruebas?
+
+```{r}
+4*0.75
+```
+_Respuesta_: Se espera que 3 de los 4 componentes sobrevivan la prueba de choque.
+
+---
+
+*DISTRIBUCION DE POISSON*
+
+Se determina que en una cierta región de Chile, hay un promedio de 2 temblores por semana (mu = lambda = 2). Definimos X como la variable aleatoria de esta situación.
+
+¿Cuál es la probabilidad de que en una semana ocurran exactamente 5 temblores? P(X=5)
+
+```{r}
+dpois(5,2)
+```
+_Respuesta_: La probabilidad de que en una semana ocurran exactamente 5 temblores es de poco menos del 4%
+
+---
+
+¿Cuál es la probabilidad de que en una semana ocurra por lo menos 2 temblores? P(X>=2)
+
+```{r}
+1-sum(dpois(0:1,2))
+ppois(1,2,lower.tail = FALSE)
+```
+_Respuesta_: La probabilidad de que en una semana ocurran por lo menos 2 temblores es casi 60%
+
+---
+
+¿Cuál es la probabilidad de que ocurran 2 en una semana y 5 en proxima semana? P(X=2) * P(X=5)
+
+```{r}
+dpois(2,2)*dpois(5,2)
+```
+_Respuesta_: La probabilidad de que ocurran 2 temblores en una semana y 5 en la proxima es de menos del 1%
+
+---
+
+¿Cuál es la probabilidad de que ocurran por lo menos 3 temblores en un periodo de 2 semanas? P(X>=3)=P(X>4) (lambda = 4) 
+
+```{r}
+ppois(4,4,lower.tail = FALSE)
+
+```
+_Respuesta_: La probabilidad de que ocurran por lo menos 3 temblores en un periodo de 2 semanas es del 37%
+
+---
+
+Sea X : número de bacterias en muestras de 100 ml de agua en un cierto rio. (X~Poisson(lambda = 5)). Se selecciona una muestra al azar. ¿Cúal es la probabilidad de obtener más de 4 bacterias? P(X>4)
+
+```{r}
+ppois(4,5,lower.tail = FALSE)
+```
+_Respuesta_: La probabilidad de obtener mas de 4 bacterias es del 56%
+
+---
+
+Si se selecciona al azar 10 muestras de agua de 100ml. ¿Cúal es la probabilidad de que exactamente 3 muestras tengan un número de bacterias mayor a 4?  _Binomial! Y: la muestra tiene una cantidad de bacterias mayor a 4 con probabilidad de exito: 0.5595_
+
+_P(Y=3)=10C3 (0.5595)^3 (1-0.5595)^7 ~ 0.0676_
+
+```{r}
+dbinom(3,10,0.5595)
+```
+_Respuesta_: La probabilidad de que exactamente 3 muestras tengan un numero de bacterias mayor a 4 es de poco menos del 7%

@@ -1,0 +1,101 @@
+
+title: "Codigo Variables Aleatorias y Distribuciones de Probabilidad"
+subtitle: "MAT006 – Probabilidad y Estadística | Universidad Nacional"
+author: "Acompañamiento a la Presentación (Prof. Hugo Alonso Marenco)"
+date: "2026-09-11"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: readable
+---
+
+{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+{r cars}
+summary(cars)
+
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+---
+
+Un archivo RMarkdown (.Rmd) estructurado para replicar, poner en práctica y acompañar el contenido sobre Variables Aleatorias y Distribuciones de Probabilidad de la presentación:
+
+```{r setup, include=FALSE}
+knitr::opts_chunk_set(echo = TRUE, warning = FALSE, message = FALSE)
+library(tidyverse)
+```
+
+Función de Probabilidad (Caso Discreto)Recreamos el ejemplo del lanzamiento de dos dados, donde $X$ representa la suma de las caras.
+
+```{r setup, include=FALSE}
+# Construcción del espacio muestral
+dados <- expand.grid(dado1 = 1:6, dado2 = 1:6) %>%
+  mutate(suma = dado1 + dado2)
+
+# Cálculo de la función de probabilidad p(x) = P(X = x)
+dist_prob <- dados %>%
+  group_by(x = suma) %>%
+  summarise(
+    casos = n(),
+    px = casos / 36
+  )
+
+# Mostrar la tabla de la distribución de probabilidad
+knitr::kable(dist_prob, col.names = c("Suma (x)", "Casos Favorables", "P(X = x)"))
+
+#Grafico de la Funcion de Probabilidad
+
+ggplot(dist_prob, aes(x = factor(x), y = px)) +
+  geom_col(fill = "#A80000", color = "black", alpha = 0.8) +
+  labs(
+    title = "Distribución de Probabilidad: Suma de dos dados",
+    x = "Valor de la Variable Aleatoria (X)",
+    y = "Probabilidad P(X = x)"
+  ) +
+  theme_minimal()
+
+```
+
+Funcion Distribucion Acumulada
+
+```{r setup, include=FALSE}
+# Agregar la columna de probabilidad acumulada F(x)
+dist_prob <- dist_prob %>%
+  mutate(Fx = cumsum(px))
+
+knitr::kable(dist_prob, col.names = c("x", "Casos", "p(x)", "F(x)"))
+```
+
+Grafico de la FDA
+
+```{r setup, include=FALSE}
+ggplot(dist_prob, aes(x = x, y = Fx)) +
+  geom_step(direction = "hv", color = "#A80000", size = 1) +
+  geom_point(color = "#A80000", size = 2) +
+  scale_x_continuous(breaks = 2:12) +
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.1)) +
+  labs(
+    title = "Función de Distribución Acumulada F(x)",
+    x = "x",
+    y = "F(x) = P(X <= x)"
+  ) +
+  theme_minimal()
+```

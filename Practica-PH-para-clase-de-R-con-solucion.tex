@@ -1,0 +1,753 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\documentclass[
+]{article}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+% fallback for those not using the hyperref driver hyperxmp:
+\makeatletter
+\@ifundefined{xmpquote}{\newcommand{\xmpquote}[1]{#1}}{}
+\makeatother
+\hypersetup{
+  pdftitle={Pruebas de Hipotesis RStudio},
+  pdfauthor={Profesora: Helen Guillén Oviedo},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Pruebas de Hipotesis RStudio}
+\author{Profesora: Helen Guillén Oviedo}
+\date{2024-05-23}
+
+\begin{document}
+\maketitle
+
+\emph{Pruebas de hipotesis para la media}
+
+\emph{Ejemplo} Con el fin de estudiar el número medio de flexiones
+continuas que pueden realizar sus alumnos, un profesor de educación
+física somete a 75 de ellos, elegidos aleatoriamente, a una prueba. El
+número de flexiones realizado por cada alumno, así como su sexo y si
+realizan o no deporte fuera del horario escolar se muestran en el
+fichero \emph{Flexiones.txt.} Lectura de datos
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"readxl"}\NormalTok{))\{}
+\FunctionTok{install.packages}\NormalTok{(}\StringTok{"readxl"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(}\StringTok{"readxl"}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: readxl
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{datos}\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Flexiones.xlsx"}\NormalTok{)}
+\FunctionTok{length}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{Flexiones)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 75
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(datos)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##    Flexiones            Sexo       Deporte   
+##  Min.   :35.00   Length   :75   Min.   :0.0  
+##  1st Qu.:48.00   N.unique : 2   1st Qu.:0.0  
+##  Median :50.00   N.blank  : 0   Median :0.0  
+##  Mean   :50.11   Min.nchar: 1   Mean   :0.4  
+##  3rd Qu.:54.00   Max.nchar: 1   3rd Qu.:1.0  
+##  Max.   :60.00                  Max.   :1.0
+\end{verbatim}
+
+\emph{Ejemplo 1 } Se sabe que el número de flexiones se distribuye según
+una Normal de varianza poblacional 7.5. ¿Puede asumirse, considerando un
+nivel de significación del 5\%, que el número medio de flexiones que
+realizan los alumnos es de 55?
+
+solución: 1. mu= número medio de flexiones
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  mu=55 3 Ho:mu=55 H1:mu != 55 \emph{(importante)} ``two.sided'' (dos
+  colas)
+\end{enumerate}
+
+Todas las opciones son ``two.sided'' (distinto), ``less'' (menor),
+``greater'' (mayor)
+
+Cargar el paquete \emph{install.packages(``BSDA'')} Luego planteamos las
+pruebas
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{))\{}
+\FunctionTok{install.packages}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: BSDA
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: lattice
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'BSDA'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:datasets':
+## 
+##     Orange
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{z.test}\NormalTok{(}\AttributeTok{x=}\NormalTok{datos}\SpecialCharTok{$}\NormalTok{Flexiones,}\AttributeTok{y=}\ConstantTok{NULL}\NormalTok{,}\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{,}\AttributeTok{mu=}\DecValTok{55}\NormalTok{,}\AttributeTok{sigma.x=}\FunctionTok{sqrt}\NormalTok{(}\FloatTok{7.5}\NormalTok{),}\AttributeTok{sigma.y=}\ConstantTok{NULL}\NormalTok{,}\AttributeTok{conf.level=}\FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  One-sample z-Test
+## 
+## data:  datos$Flexiones
+## z = -15.474, p-value < 2.2e-16
+## alternative hypothesis: true mean is not equal to 55
+## 95 percent confidence interval:
+##  49.48687 50.72646
+## sample estimates:
+## mean of x 
+##  50.10667
+\end{verbatim}
+
+p-valor=0.00000025 \textless0.05=alpha Conclusion: se rechaza la
+hipotesis nula
+
+interpretación: con un nivel de significancia del 5\% existe suficiente
+evidencia estadistica para concluir que el número medio de flexiones que
+realizan los alumnos es distinta de 55.
+
+\emph{Ejemplo2} Caso2: Desviación estandar poblacional desconocida,
+muestras grandes.
+
+Suponga para el mismo ejemplo que la varianza poblacional es deconocida.
+
+identificar las hipotesis para tener la hipotesis alterna. 1. mu= número
+medio de flexiones
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\setcounter{enumi}{1}
+\tightlist
+\item
+  mu=55 3 Ho:mu=55 H1:mu != 55 \emph{(importante)} ``two.sided'' (dos
+  colas) Dado que n=75\textgreater30 entonces se sigue una distrbucion
+  normal para el estadístico de prueba.
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{))\{}
+\FunctionTok{install.packages}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{)}
+\NormalTok{\}}
+\FunctionTok{z.test}\NormalTok{(}\AttributeTok{x=}\NormalTok{datos}\SpecialCharTok{$}\NormalTok{Flexiones,}\AttributeTok{y=}\ConstantTok{NULL}\NormalTok{,}\AttributeTok{alternative=}\StringTok{"two.sided"}\NormalTok{,}\AttributeTok{mu=}\DecValTok{55}\NormalTok{,}
+       \AttributeTok{sigma.x=}\FunctionTok{sd}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{Flexiones),}\AttributeTok{sigma.y=}\ConstantTok{NULL}\NormalTok{,}\AttributeTok{conf.level=}\FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  One-sample z-Test
+## 
+## data:  datos$Flexiones
+## z = -7.088, p-value = 1.36e-12
+## alternative hypothesis: true mean is not equal to 55
+## 95 percent confidence interval:
+##  48.75358 51.45976
+## sample estimates:
+## mean of x 
+##  50.10667
+\end{verbatim}
+
+p-valor=0.0000084 \textless0.01=alpha Conclusion: se rechaza la
+hipotesis nula
+
+Interpretación: con un nivel de significancia del 5\% existe suficiente
+evidencia estadistica para concluir que el número medio de flexiones que
+realizan los alumnos es distinto de 55.
+
+\emph{Ejercicio 1:} Se desea contrastar con un nivel de significancia
+del 5\% la hipótesis de que la estatura media de los hombres de 18 o más
+años de un país es menor que 175 cm. Suponiendo que la desviación
+estándar es de 4.5. Para dicha prueba se recolectaron los datos que
+constituyen una muestra de n=14 hombres seleccionados al azar, cuyas
+alturas en cm son: 167 167 168 168 168 169 171 172 173 175 175 175 177
+182. suponiendo que la poblacion se distribuye de manera normal.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  mu: estatura media de los hombres de 18 o más años.
+\item
+  mu\textless175
+\item
+  H\_0:mu\textgreater=175 H\_1:mu\textless175
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{))\{}
+\FunctionTok{install.packages}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{x}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{167}\NormalTok{,}\DecValTok{167}\NormalTok{,}\DecValTok{168}\NormalTok{,}\DecValTok{168}\NormalTok{,}\DecValTok{168}\NormalTok{,}\DecValTok{169}\NormalTok{,}\DecValTok{171}\NormalTok{,}\DecValTok{172}\NormalTok{,}\DecValTok{173}\NormalTok{,}\DecValTok{175}\NormalTok{,}\DecValTok{175}\NormalTok{,}\DecValTok{175}\NormalTok{,}\DecValTok{177}\NormalTok{,}\DecValTok{182}\NormalTok{)}
+\FunctionTok{z.test}\NormalTok{(x,}\AttributeTok{y=}\ConstantTok{NULL}\NormalTok{, }\AttributeTok{alternative=}\StringTok{"less"}\NormalTok{, }\AttributeTok{mu=}\DecValTok{175}\NormalTok{,}\AttributeTok{sigma.x=}\FloatTok{4.5}\NormalTok{ ,}\AttributeTok{sigma.y=}\ConstantTok{NULL}\NormalTok{, }\AttributeTok{conf.level=}\FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  One-sample z-Test
+## 
+## data:  x
+## z = -2.5538, p-value = 0.005327
+## alternative hypothesis: true mean is less than 175
+## 95 percent confidence interval:
+##        NA 173.9068
+## sample estimates:
+## mean of x 
+##  171.9286
+\end{verbatim}
+
+p-valor=0.005327\textless0.05=alpha se rechaza H0
+
+\emph{Interpretación:} Con un nivel de significancia del 5\%, existe
+suficiente evidencia estadistica para concluir que la estatura media de
+los hombres de 18 o más años es menor a 175 cm.
+
+\emph{Ejercicio 2:} Cierta cadena de almacenes de descuentos emite su
+propia tarjeta de credito. La gerente de credito, desea descubrir si el
+promedio sin pagar mensual es más de \$405. El nivel de significancia se
+fija en 0.01.Para ello se tomo una muestra de 39 datos, los cuales se
+muestran a continuacion:
+395,400,410,415,400,398,403,390,389,391,406,412,403,400,396,410,404,410,420,405,406,418,397,395,408,400,409,419,417,402,405,400,414,399,411,405,412,418,413.
+¿Debe la gerente concluir que el promedio sin pagar mensual de la
+poblacion es mayor a \$405?
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  mu: promedio sin pagar mensual en tarjetas de credito
+\item
+  mu\textgreater405
+\item
+  H\_o: mu\textless=405 H\_1: mu\textgreater405
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{))\{}
+\FunctionTok{install.packages}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{x}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{395}\NormalTok{,}\DecValTok{400}\NormalTok{,}\DecValTok{410}\NormalTok{,}\DecValTok{415}\NormalTok{,}\DecValTok{400}\NormalTok{,}\DecValTok{398}\NormalTok{,}\DecValTok{403}\NormalTok{,}\DecValTok{390}\NormalTok{,}\DecValTok{389}\NormalTok{,}\DecValTok{391}\NormalTok{,}\DecValTok{406}\NormalTok{,}\DecValTok{412}\NormalTok{,}\DecValTok{403}\NormalTok{,}\DecValTok{400}\NormalTok{,}\DecValTok{396}\NormalTok{,}\DecValTok{410}\NormalTok{,}\DecValTok{404}\NormalTok{,}\DecValTok{410}\NormalTok{,}\DecValTok{420}\NormalTok{,}\DecValTok{405}\NormalTok{,}\DecValTok{406}\NormalTok{,}\DecValTok{418}\NormalTok{,}\DecValTok{397}\NormalTok{,}\DecValTok{395}\NormalTok{,}\DecValTok{408}\NormalTok{,}\DecValTok{400}\NormalTok{,}\DecValTok{409}\NormalTok{,}\DecValTok{419}\NormalTok{,}\DecValTok{417}\NormalTok{,}\DecValTok{402}\NormalTok{,}\DecValTok{405}\NormalTok{,}\DecValTok{400}\NormalTok{,}\DecValTok{414}\NormalTok{,}\DecValTok{399}\NormalTok{,}\DecValTok{411}\NormalTok{,}\DecValTok{405}\NormalTok{,}\DecValTok{412}\NormalTok{,}\DecValTok{418}\NormalTok{,}\DecValTok{413}\NormalTok{)}
+\FunctionTok{length}\NormalTok{(x)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 39
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{z.test}\NormalTok{(x,}\AttributeTok{y=}\ConstantTok{NULL}\NormalTok{, }\AttributeTok{alternative=}\StringTok{"greater"}\NormalTok{, }\AttributeTok{mu=}\DecValTok{405}\NormalTok{,}\AttributeTok{sigma.x=}\FunctionTok{sd}\NormalTok{(x) ,}\AttributeTok{sigma.y=}\ConstantTok{NULL}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  One-sample z-Test
+## 
+## data:  x
+## z = 0.19243, p-value = 0.4237
+## alternative hypothesis: true mean is greater than 405
+## 95 percent confidence interval:
+##  403.0646       NA
+## sample estimates:
+## mean of x 
+##  405.2564
+\end{verbatim}
+
+p-value = 0.4237\textgreater0.01=alpha Conclusión: No se rechaza
+interpretación: Con un nivel de significancia del 1\% no existe
+suficiente evidencia estadística para concluir que el promedio sin pagar
+mensual de la poblacion es mayor a \$405.
+
+\emph{Caso3: Desviación estándar poblacional desconocida, muestras
+pequeñas}
+
+\emph{Ejemplo:} Una compañía ferroviaria canadiense afirma que sus
+trenes de mercancías no bloquean los pasos a nivel durante más de 8
+minutos, en promedio. Una muestra aleatoria de 10 tiempos de bloqueo dio
+como resultado estos valores (en minutos):
+
+\emph{10.1, 9.5, 6.5, 8.0, 8.8, 12, 7.2, 10.5, 8.2, 9.3. }
+
+Bajo un nivel de significancia del 1\%.
+
+Realice la prueba de hipotesis. Se asume que la distribucion de los
+datos es normal.
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  mu: tiempo promedio que los trenes no bloquean los pasos a nivel.
+\item
+  m\textgreater8 H\_o:mu\textless=8 H\_1:mu\textgreater8
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{))\{}
+\FunctionTok{install.packages}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{datos1}\OtherTok{=}\FunctionTok{c}\NormalTok{(}\FloatTok{10.1}\NormalTok{, }\FloatTok{9.5}\NormalTok{, }\FloatTok{6.5}\NormalTok{, }\FloatTok{8.0}\NormalTok{, }\FloatTok{8.8}\NormalTok{, }\DecValTok{12}\NormalTok{, }\FloatTok{7.2}\NormalTok{, }\FloatTok{10.5}\NormalTok{, }\FloatTok{8.2}\NormalTok{, }\FloatTok{9.3}\NormalTok{)}
+\FunctionTok{length}\NormalTok{(datos1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 10
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#Se verifica normalidad de los datos.}
+\FunctionTok{qqnorm}\NormalTok{(datos1,}\AttributeTok{col=}\StringTok{"blue"}\NormalTok{,}\AttributeTok{xlab=}\StringTok{"Eje z"}\NormalTok{,}\AttributeTok{ylab=}\StringTok{"Tiempo"}\NormalTok{, }\AttributeTok{main=}\StringTok{"trenes de mercancia"}\NormalTok{); }\FunctionTok{qqline}\NormalTok{(datos1,}\AttributeTok{col=}\StringTok{"red"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Practica-PH-para-clase-de-R-con-solucion_files/figure-latex/unnamed-chunk-6-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{t.test}\NormalTok{(datos1,}\AttributeTok{mu=}\DecValTok{8}\NormalTok{,}\AttributeTok{alternative=}\StringTok{"greater"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  One Sample t-test
+## 
+## data:  datos1
+## t = 1.9571, df = 9, p-value = 0.04101
+## alternative hypothesis: true mean is greater than 8
+## 95 percent confidence interval:
+##  8.063996      Inf
+## sample estimates:
+## mean of x 
+##      9.01
+\end{verbatim}
+
+p-value = 0.04101\textgreater0.01=alpha
+
+No se rechaza H0
+
+Conclusion:Con un nivel de significancia del 1\%, no existe suficiente
+evidencia estadística para concluir que los trenes de mercancías no
+bloquean los pasos a nivel durante más de 8 minutos.
+
+\textbf{Inferencias Basadas en dos Muestras. Procedimientos de Prueba
+para la Diferencia de medias}
+
+\textbf{CASO I: POBLACIONES NORMALES CON VARIANZAS CONOCIDAS o muestras
+grandes.}
+
+Ejemplo: Dos ciclistas compiten para saber quién de los dos es más
+rápido y entrenan a diario de la misma forma, cada día recorren 15
+kilómetros durante un mes. El dato promedio del tiempo para el ciclista
+1 es de 122 y para el ciclista 2 es 120.
+
+Varias personas afirman que el ciclista 2 ganara la carrera, a un nivel
+de significancia del 5\% comprobar las especulaciones de las personas
+asumiento una varianza igual para ambos ciclistas.
+
+Ciclista1:(130,129,130,124,124,122,130,125,126,123,130,126,125,128,125,125,125,125,125,125,130,123,120,122,125,123,122,127,120,121,122)
+
+Ciclista2:(128,130,125,125,127,123,130,125,124,123,130,125,125,129,125,125,125,124,125,125,130,122,121,121,125,125,122,128,121,125,122)
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  mu\_1:tiempo promedio del ciclista 1 Mu\_2:tiempo promedio del
+  ciclista 2
+\item
+  mu\_2\textless{} mu\_1 es lo mismo que mu\_1 \textgreater{} mu\_2
+\item
+  H\_0:mu\_2\textgreater=mu\_1 H\_1:mu\_2\textless mu\_1
+  (mu\_2-mu\_1\textless0)
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ciclista\_1}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\DecValTok{130}\NormalTok{,}\DecValTok{129}\NormalTok{,}\DecValTok{130}\NormalTok{,}\DecValTok{124}\NormalTok{,}\DecValTok{124}\NormalTok{,}\DecValTok{122}\NormalTok{,}\DecValTok{130}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{126}\NormalTok{,}\DecValTok{123}\NormalTok{,}\DecValTok{130}\NormalTok{,}\DecValTok{126}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{128}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{130}\NormalTok{,}\DecValTok{123}\NormalTok{,}\DecValTok{120}\NormalTok{,}\DecValTok{122}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{123}\NormalTok{,}\DecValTok{122}\NormalTok{,}\DecValTok{127}\NormalTok{,}\DecValTok{120}\NormalTok{,}\DecValTok{121}\NormalTok{,}\DecValTok{122}\NormalTok{)}
+\NormalTok{ciclista\_2 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{128}\NormalTok{,}\DecValTok{130}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{127}\NormalTok{,}\DecValTok{123}\NormalTok{,}\DecValTok{130}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{124}\NormalTok{,}\DecValTok{123}\NormalTok{,}\DecValTok{130}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{129}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{124}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{130}\NormalTok{,}\DecValTok{122}\NormalTok{,}\DecValTok{121}\NormalTok{,}\DecValTok{121}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{125}\NormalTok{,}\DecValTok{122}\NormalTok{,}\DecValTok{128}\NormalTok{,}\DecValTok{122}\NormalTok{,}\DecValTok{121}\NormalTok{,}\DecValTok{125}\NormalTok{)}
+
+\FunctionTok{boxplot}\NormalTok{(ciclista\_1,ciclista\_2,}\AttributeTok{main=}\StringTok{"Comparacion de recorrido"}\NormalTok{,}\AttributeTok{ylab=}\StringTok{"Kilometros"}\NormalTok{,}\AttributeTok{col=}\StringTok{"Orange"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Practica-PH-para-clase-de-R-con-solucion_files/figure-latex/unnamed-chunk-7-1.pdf}}
+Ahora que sabemos que las varianzas son desconocidas y que podemos
+asumir que son normales sus poblaciones con varianzas iguales
+realizaremos la prueba de hipotesis:
+
+H\_1:mu\_2\textless mu\_1 (mu\_2-mu\_1\textless0)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{))\{}
+\FunctionTok{install.packages}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(}\StringTok{"BSDA"}\NormalTok{)}
+\NormalTok{\}}
+\FunctionTok{z.test}\NormalTok{(}\AttributeTok{x=}\NormalTok{ciclista\_2,}\AttributeTok{y=}\NormalTok{ciclista\_1,}\AttributeTok{alternative=}\StringTok{"less"}\NormalTok{,}\AttributeTok{mu=}\DecValTok{0}\NormalTok{,}\AttributeTok{sigma.x=}\FunctionTok{sd}\NormalTok{(ciclista\_2),}\AttributeTok{sigma.y=}\FunctionTok{sd}\NormalTok{(ciclista\_1),}\AttributeTok{conf.level=}\FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Two-sample z-Test
+## 
+## data:  ciclista_2 and ciclista_1
+## z = 0.13277, p-value = 0.5528
+## alternative hypothesis: true difference in means is less than 0
+## 95 percent confidence interval:
+##        NA 1.295659
+## sample estimates:
+## mean of x mean of y 
+##  125.1613  125.0645
+\end{verbatim}
+
+p-values=0.5528\textgreater0.05=alpha no se rechaza la hipotesis nula
+Interpretación: Con un nivel de significancia del 5\% no existe
+suficiente evidencia estadística para concluir que el ciclista 2 ganará
+la carrera.
+
+\textbf{CASO II: POBLACIONES NORMALES CON VARIANZAS DESCONOCIDAS PERO
+IGUALES Y MUESTRAS PEQUEÑAS.}
+
+Ejemplo: Un dueño de una fábrica tiene un pedido muy grande y para
+llevarlo a cabo necesita conocer cuál de las dos máquinas para realizar
+el proceso trabaja con mayor velocidad, el intuye que la maquina 2 es
+más efectiva y para ello hace una prueba, toman el tiempo de fabricación
+en minutos de 10 productos en cada máquina. Los resultados son:
+
+maquina\_1 \textless- c(14,13,15,14,17,16,15,16,13,17) maquina\_2
+\textless- c(16,15,14,17,12,17,15,16,15,14)
+
+¿Es posible que la maquina 2 tenga un mejor tiempo de producción que la
+maquina 1 usando un nivel de significancia de 0.05?
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  mu\_1:Tiempo medio de produccion de la maquina 1 mu\_2:Tiempo medio de
+  produccion de la maquina 2
+\item
+  m\_2 \textless{} m\_1
+\item
+  H\_0:mu\_2\textgreater=mu\_1 H\_1:mu\_2\textless mu\_1
+  (mu\_2-mu\_1\textless0)
+\end{enumerate}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{maquina\_1 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{14}\NormalTok{,}\DecValTok{13}\NormalTok{,}\DecValTok{15}\NormalTok{,}\DecValTok{14}\NormalTok{,}\DecValTok{17}\NormalTok{,}\DecValTok{16}\NormalTok{,}\DecValTok{15}\NormalTok{,}\DecValTok{16}\NormalTok{,}\DecValTok{13}\NormalTok{,}\DecValTok{17}\NormalTok{)}
+\NormalTok{maquina\_2 }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\DecValTok{16}\NormalTok{,}\DecValTok{15}\NormalTok{,}\DecValTok{14}\NormalTok{,}\DecValTok{17}\NormalTok{,}\DecValTok{12}\NormalTok{,}\DecValTok{17}\NormalTok{,}\DecValTok{15}\NormalTok{,}\DecValTok{16}\NormalTok{,}\DecValTok{15}\NormalTok{,}\DecValTok{14}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Ahora veremos si nuestras muestras son normales:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qqnorm}\NormalTok{(maquina\_1,}\AttributeTok{col=}\StringTok{"blue"}\NormalTok{,}\AttributeTok{xlab=}\StringTok{"Eje z"}\NormalTok{,}\AttributeTok{ylab=}\StringTok{"Tiempo"}\NormalTok{, }\AttributeTok{main=}\StringTok{"Maquina 1"}\NormalTok{); }\FunctionTok{qqline}\NormalTok{(maquina\_1,}\AttributeTok{col=}\StringTok{"red"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Practica-PH-para-clase-de-R-con-solucion_files/figure-latex/unnamed-chunk-10-1.pdf}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qqnorm}\NormalTok{(maquina\_2,}\AttributeTok{col=}\StringTok{"blue"}\NormalTok{,}\AttributeTok{xlab=}\StringTok{"Eje z"}\NormalTok{,}\AttributeTok{ylab=}\StringTok{"Tiempo"}\NormalTok{, }\AttributeTok{main=}\StringTok{"Maquina 2"}\NormalTok{); }\FunctionTok{qqline}\NormalTok{(maquina\_2,}\AttributeTok{col=}\StringTok{"red"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\pandocbounded{\includegraphics[keepaspectratio]{Practica-PH-para-clase-de-R-con-solucion_files/figure-latex/unnamed-chunk-10-2.pdf}}
+Una vez comprobado que son normales, usaremos nuestra prueba de
+hipótesis, donde nuestra hipótesis alternativa.
+H\_1:mu\_2\textless mu\_1
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{t.test}\NormalTok{(}\AttributeTok{x=}\NormalTok{maquina\_2,}\AttributeTok{y=}\NormalTok{maquina\_1,}\AttributeTok{alternative=}\StringTok{"less"}\NormalTok{,}\AttributeTok{mu=}\DecValTok{0}\NormalTok{,}\AttributeTok{var.equal=}\ConstantTok{TRUE}\NormalTok{,}\AttributeTok{conf.level=}\FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  Two Sample t-test
+## 
+## data:  maquina_2 and maquina_1
+## t = 0.14834, df = 18, p-value = 0.5581
+## alternative hypothesis: true difference in means is less than 0
+## 95 percent confidence interval:
+##      -Inf 1.268976
+## sample estimates:
+## mean of x mean of y 
+##      15.1      15.0
+\end{verbatim}
+
+p=value=0.55\textgreater0.05=alpha no se rechaza H\_0 Conclusión:Con un
+nivel de significancia del 5\% no existe suficiente evidencia
+estadistica para concluir que la maquina 2 tiene un mejor tiempo de
+producción que la maquina 1.
+
+**Prueba de hipotesis para proporciones* Considerando nuevamente el
+conjunto de datos que se ha presentado en el Supuesto práctico1,
+relativo al número de flexiones y el sexo de los alumnos.
+
+Contrastar a un nivel de confianza del 95\%, si la proporción de alumnos
+varones es mayor o igual que 0.5 frente a que dicha proporción es menor.
+El fichero es Flexiones.txt.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{(}\SpecialCharTok{!}\FunctionTok{require}\NormalTok{(}\StringTok{"readxl"}\NormalTok{))\{}
+\FunctionTok{install.packages}\NormalTok{(}\StringTok{"readxl"}\NormalTok{)}
+\FunctionTok{library}\NormalTok{(}\StringTok{"readxl"}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{datos}\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Flexiones.xlsx"}\NormalTok{)}
+\FunctionTok{table}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{Sexo)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  H  M 
+## 43 32
+\end{verbatim}
+
+P:PROPORCIÓN DE ALUMNOS QUE SON HOMBRES
+
+H\_0:P\textgreater=0.5
+
+H\_1:P\textless0.5
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{datos}\SpecialCharTok{$}\NormalTok{Sexo}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "H" "H" "M" "M" "H" "H" "H" "M" "M" "M" "M" "M" "H" "M" "M" "H" "H" "H" "H"
+## [20] "H" "H" "M" "M" "M" "M" "M" "M" "H" "H" "M" "H" "M" "M" "H" "M" "H" "M" "H"
+## [39] "H" "M" "M" "H" "M" "H" "M" "M" "H" "M" "M" "H" "H" "H" "M" "M" "H" "H" "H"
+## [58] "M" "H" "M" "H" "H" "H" "H" "H" "H" "H" "H" "H" "H" "H" "H" "H" "M" "H"
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{x}\OtherTok{\textless{}{-}}\FunctionTok{length}\NormalTok{(}\FunctionTok{which}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{Sexo}\SpecialCharTok{==}\StringTok{"H"}\NormalTok{))}
+\NormalTok{x}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 43
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n}\OtherTok{\textless{}{-}}\FunctionTok{length}\NormalTok{(datos}\SpecialCharTok{$}\NormalTok{Sexo)}
+\FunctionTok{prop.test}\NormalTok{(x,n,}\AttributeTok{p=}\FloatTok{0.5}\NormalTok{,}\AttributeTok{alternative=}\StringTok{"less"}\NormalTok{, }\AttributeTok{conf.level =} \FloatTok{0.95}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##  1-sample proportions test with continuity correction
+## 
+## data:  x out of n, null probability 0.5
+## X-squared = 1.3333, df = 1, p-value = 0.8759
+## alternative hypothesis: true p is less than 0.5
+## 95 percent confidence interval:
+##  0.0000000 0.6693525
+## sample estimates:
+##         p 
+## 0.5733333
+\end{verbatim}
+
+P: proporcion de llamadas de emergencias de vida o muerte recibidas en
+el servicio de ambulancia
+
+P\textgreater=0.4
+
+H\_0: P \textgreater= 0.4 H\_1: P \textless{} 0.4
+
+Zc=-1.83333
+
+z\_alpha=-2.3263
+
+Para rechazar se debe cumplir que zc\textless{} z\_alpha y esto no
+ocurre conclusion: No se rechaza la HO
+
+Inter: Con un nivel de significancia del 1\% no existe suficiente
+evidencia estadistica para rechazar que la proporcion de llamadas de
+vida o muerte recibidas por el servicio de ambulancias es al menos el
+40\%.
+
+Con un nivel de significancia del 1\% no existe suficiete evidencia
+estadistica para concluir que la proporcion de llamadas de vida o muerte
+recibidas por el servicio de ambulancias es menor al 40\%.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{zc}\OtherTok{=}\NormalTok{(}\DecValTok{49}\SpecialCharTok{/}\DecValTok{150} \SpecialCharTok{{-}} \FloatTok{0.4}\NormalTok{)}\SpecialCharTok{/}\NormalTok{(}\FunctionTok{sqrt}\NormalTok{((}\FloatTok{0.4}\SpecialCharTok{*}\FloatTok{0.6}\NormalTok{)}\SpecialCharTok{/}\DecValTok{150}\NormalTok{))}
+\NormalTok{zc}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -1.833333
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.01}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] -2.326348
+\end{verbatim}
+
+\end{document}

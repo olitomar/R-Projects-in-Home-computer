@@ -1,0 +1,98 @@
+---
+title: "Practica primer parcial"
+author: "Naydelin Fernandez"
+date: "2026-08-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+if(!require("readxl")){
+  install.packages("readxl")
+  library("readxl")
+}
+
+datos <- read_excel("Loslagos.xlsx")
+```
+```{r}
+head(datos)
+```
+```{r}
+media1<-mean(datos$ESTATURA[datos$ESTAFI==1])
+mediana1<-median(datos$ESTATURA[datos$ESTAFI==1])
+
+cat("Para el grupo con estado físico malo,
+la estatura promedio es de",media1,
+"cm y la mediana es de",mediana1,"cm.")
+
+media2<-mean(datos$ESTATURA[datos$ESTAFI==2])
+mediana2<-median(datos$ESTATURA[datos$ESTAFI==2])
+
+cat("Para el grupo con estado físico regular,
+la estatura promedio es de",media2,
+"cm y la mediana es de",mediana2,"cm.")
+
+media3<-mean(datos$ESTATURA[datos$ESTAFI==3])
+mediana3<-median(datos$ESTATURA[datos$ESTAFI==3])
+
+cat("Para el grupo con estado físico bueno,
+la estatura promedio es de",media3,
+"cm y la mediana es de",mediana3,"cm.")
+```
+En el grupo con estado físico malo, la estatura promedio es de 164.14 cm y la mediana es de 164 cm. En el grupo con estado físico regular, la estatura promedio es de 168.25 cm y la mediana es de 169 cm. En el grupo con estado físico bueno, la estatura promedio es de 173.75 cm y la mediana es de 175.5 cm.
+
+Al compararlos, se puede ver que la estatura promedio aumenta conforme mejora el estado físico, el grupo con estado físico malo presenta la menor estatura promedio, mientras que el grupo con estado físico bueno presenta la mayor. Por lo tanto, en esta muestra parece existir una relación entre la estatura y el estado físico, ya que las personas con mejor estado físico tienden a presentar una mayor estatura.
+```{r}
+minimo<-min(datos$LBRAZO)
+maximo<-max(datos$LBRAZO)
+
+amplitud<-(maximo-minimo)/4
+
+minimo
+maximo
+amplitud
+```
+```{r}
+clases<-cut(datos$LBRAZO,
+            breaks=c(65,70,75,79,83),
+            include.lowest=TRUE)
+
+frecuencias<-table(clases)
+
+porcentajes<-prop.table(frecuencias)*100
+
+frecuencias
+porcentajes
+```
+```{r}
+tabla<-data.frame(
+  Clases=c("65-70","71-75","76-79","80-83"),
+  Frecuencia=as.vector(frecuencias),
+  Porcentaje=round(as.vector(porcentajes),2)
+)
+
+tabla
+```
+```{r}
+
+if(!require("modeest")){
+  install.packages("modeest")
+  library("modeest")
+}
+moda<-mfv(datos$LBRAZO)
+media<-mean(datos$LBRAZO)
+
+Q1<-quantile(datos$LBRAZO,probs=25/100,na.rm=TRUE)
+Q3<-quantile(datos$LBRAZO,probs=75/100,na.rm=TRUE)
+RI<-(Q3-Q1)
+
+cat("La longitud de brazo más frecuente es de:",moda,"cm.")
+
+cat("La longitud de brazo promedio es de:",media,"cm.")
+
+cat("El recorrido intercuartilico de la longitud de brazo es:",RI,"cm.")
+```
+
+

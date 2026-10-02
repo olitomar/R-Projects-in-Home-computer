@@ -1,0 +1,257 @@
+---
+title: "Alison.Ramirez.Lab1"
+author: "Alison Ramirez Medina"
+date: "2026-09-04"
+output: html_document
+---
+
+# Lectura de datos
+
+```{r}
+library(readxl)
+library(flextable)
+install.packages("fdth")
+library(fdth)
+
+datos <- read_excel("BaseDatosServidores.xlsx")
+
+head(datos)
+
+##Pregunta 1
+
+# Orden de los estados del servidor
+estado <- factor(datos$EstadoServidor,
+                 levels = c("Óptimo", "Degradado", "Critico"))
+
+# Frecuencia absoluta simples
+frec_absoluta <- as.vector(table(estado))
+
+# Porcentajes
+frec_porcentual <- round(prop.table(frec_absoluta) * 100, 2)
+
+#Nombre de las clases
+nombre1 <- c("Óptimo", "Degradado", "Crítico")
+
+# Crear tabla
+tabla1 <- data.frame(
+  EstadoServidor = nombre1,
+  FrecuenciaAbsoluta = frec_absoluta,
+  Porcentaje = frec_porcentual
+)
+
+# Cambiar nombres de las columnas
+colnames(tabla1) <- c(
+  "Estado del Servidor",
+  "Frecuencia Absoluta",
+  "Porcentaje (%)"
+)
+
+# Dar formato al cuadro
+tabla1 <- flextable(tabla1)
+
+tabla1 <- align(
+  tabla1,
+  align = "center",
+  part = "all"
+)
+
+tabla1 <- set_caption(
+  tabla1,
+  caption = "Cuadro N° 1. Distribución de servidores según estado de salud del nodo. Infraestructura multi-nube, tercer cuatrimestre de 2025."
+)
+
+tabla1 <- add_footer_lines(
+  tabla1,
+  values = "Fuente: BaseDatosServidores.xlsx."
+)
+
+tabla1 <- autofit(tabla1)
+
+tabla1
+
+##Pregunta 2
+
+# Ordenar las categorías
+nivel_carga <- factor(
+  datos$NivelCarga,
+  levels = c("Bajo", "Medio", "Alto")
+)
+
+tipo_entorno <- factor(
+  datos$TipoEntorno,
+  levels = c("BD", "WebAPI", "Batch")
+)
+
+# Crear tabla de contingencia
+tabla2 <- table(nivel_carga, tipo_entorno)
+
+tabla2
+
+# Gráfico de barras comparativas
+barplot(
+  tabla2,
+  beside = TRUE,
+  col = rainbow(3),
+  main = "Nivel de carga segun tipo de entorno",
+  xlab = "Tipo de entorno",
+  ylab = "Cantidad de servidores",
+  legend.text = c("Bajo", "Medio", "Alto"),
+  args.legend = list(
+    x = "topright",
+    cex = 0.8
+  ),
+  las = 1
+)
+
+abline(h = 0)
+
+##Pregunta 3
+
+# Crear distribucion de frecuencias
+# Ancho de clase = 10
+
+dist_cpu <- fdt(
+  datos$UsoCPU,
+  start = 10,
+  end = 100,
+  h = 10
+)
+
+dist_cpu
+
+# Polígono de frecuencias absolutas
+plot(
+  dist_cpu,
+  type = "fp",
+  las = 1,
+  col = "blue"
+)
+
+abline(h = 0)
+
+##Pregunta 4
+
+# Extraer solamente los servidores WebAPI
+latencia_webapi <- datos$Latencia[
+  datos$TipoEntorno == "WebAPI"
+]
+
+# Mediana
+mediana_latencia <- median(
+  latencia_webapi,
+  na.rm = TRUE
+)
+
+# Desviación estándar para la variable de latencia
+desviacion_latencia <- sd(
+  latencia_webapi,
+  na.rm = TRUE
+)
+
+cat(
+  "Mediana de la Latencia para WebAPI:",
+  mediana_latencia,
+  "ms\n"
+)
+
+cat(
+  "Desviación estándar de la Latencia para WebAPI:",
+  round(desviacion_latencia, 2),
+  "ms\n"
+)
+
+##Pregunta 5
+
+# Cuartil 1 = 25%
+cuartil1_ram <- quantile(
+  datos$UsoRAM,
+  probs = 0.25,
+  na.rm = TRUE
+)
+
+# Decil 7 = 70%
+decil7_ram <- quantile(
+  datos$UsoRAM,
+  probs = 0.70,
+  na.rm = TRUE
+)
+
+cat(
+  "Cuartil 1 del Uso de RAM:",
+  cuartil1_ram,
+  "GB\n"
+)
+
+cat(
+  "Decil 7 del Uso de RAM:",
+  decil7_ram,
+  "GB\n"
+)
+
+##Pregunta 6
+
+# Orden de los estados
+estado_servidor <- factor(
+  datos$EstadoServidor,
+  levels = c("Óptimo", "Degradado", "Crítico")
+)
+
+# Diagrama de cajas
+boxplot(
+  datos$TasaErrores ~ estado_servidor,
+  main = "Tasa de errores segun estado del servidor",
+  xlab = "Estado del servidor",
+  ylab = "Tasa de errores (%)",
+  col = rainbow(3),
+  las = 1
+)
+
+##Pregunta 7
+
+# Contenedores activos de AWS
+contenedores_aws <- datos$ContenedoresActivos[
+  datos$ProveedorCloud == "AWS"
+]
+
+# Contenedores activos de Azure
+contenedores_azure <- datos$ContenedoresActivos[
+  datos$ProveedorCloud == "Azure"
+]
+
+# Coeficiente de variación de AWS
+CV_AWS <- (
+  sd(contenedores_aws, na.rm = TRUE) /
+  mean(contenedores_aws, na.rm = TRUE)
+) * 100
+
+# Coeficiente de variación de Azure
+CV_Azure <- (
+  sd(contenedores_azure, na.rm = TRUE) /
+  mean(contenedores_azure, na.rm = TRUE)
+) * 100
+
+cat(
+  "Coeficiente de variación AWS:",
+  round(CV_AWS, 2),
+  "%\n"
+)
+
+cat(
+  "Coeficiente de variación Azure:",
+  round(CV_Azure, 2),
+  "%\n"
+)
+
+# Determinar cuál tiene mayor variabilidad relativa
+if (CV_AWS > CV_Azure) {
+
+  cat(
+    "AWS presenta mayor variabilidad relativa en el número de contenedores activos."
+  )
+
+} else {
+
+  cat(
+    "Azure presenta mayor variabilidad relativa en el numero de contenedores activos"
+  )
+}

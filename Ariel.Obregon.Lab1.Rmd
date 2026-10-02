@@ -1,0 +1,168 @@
+---
+title: "Laboratorio 1: Análisis y Monitoreo de Métricas de Servidores en la Nube"
+author: "Ariel Obregón"
+date: "2026-08-31"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+# Carga de librerías
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+```
+
+## Lectura de datos
+
+```{r lectura-datos}
+# Lectura de datos en excel
+datos <- read_excel("BaseDatosServidores.xlsx")
+
+# Verifico la estructura de los datos con esto
+head(datos)
+str(datos)
+```
+
+---
+
+## Pregunta 1: Cuadro de distribución de frecuencias para EstadoServidor
+
+**Cuadro 1.** Costa Rica: Distribución de instancias de servidores según su estado de salud operacional, tercer cuatrimestre de 2025.
+
+```{r pregunta-1}
+# Cálculo de frecuencias absolutas y porcentajes
+tabla_frecuencias <- datos %>%
+  group_by(`Estado del Servidor` = EstadoServidor) %>%
+  summarise(
+    `Frecuencia Absoluta` = n(),
+    `Porcentaje (%)` = round((n() / nrow(datos)) * 100, 2)
+  ) %>%
+  arrange(desc(`Frecuencia Absoluta`))
+
+# Agregar fila de Total
+tabla_pregunta1 <- bind_rows(
+  tabla_frecuencias,
+  tibble(
+    `Estado del Servidor` = "Total",
+    `Frecuencia Absoluta` = sum(tabla_frecuencias$`Frecuencia Absoluta`),
+    `Porcentaje (%)` = sum(tabla_frecuencias$`Porcentaje (%)`)
+  )
+)
+
+# Presentación del cuadro
+kable(tabla_pregunta1, align = c("l", "c", "c"))
+```
+
+*Fuente: Elaboración propia con base en los datos recopilados por el equipo de DevOps y SRE, III Cuatrimestre de 2025.*
+
+---
+
+## Pregunta 2: Gráfico de Nivel de Carga según Tipo de Entorno
+
+```{r pregunta-2}
+# Gráfico de barras agrupadas
+ggplot(datos, aes(x = TipoEntorno, fill = NivelCarga)) +
+  geom_bar(position = "dodge") +
+  labs(
+    title = "Nivel de Carga de Trabajo según Tipo de Entorno",
+    x = "Tipo de Entorno Operativo",
+    y = "Número de Servidores",
+    fill = "Nivel de Carga"
+  ) +
+  theme_minimal()
+```
+
+---
+
+## Pregunta 3: Polígono de frecuencias absolutas para Uso de CPU
+
+```{r pregunta-3}
+# Límites de clase con ancho de 10
+limites_clase <- seq(0, 100, by = 10)
+
+# Agrupación y tabla de frecuencias
+intervalos <- cut(datos$UsoCPU, breaks = limites_clase, right = FALSE, include.lowest = TRUE)
+tabla_intervalos <- as.data.frame(table(intervalos))
+
+# Marcas de clase
+marcas_clase <- seq(5, 95, by = 10)
+
+# Datos cerrando el polígono en 0 en los extremos
+poligono_datos <- data.frame(
+  MarcaClase = c(-5, marcas_clase, 105),
+  FrecuenciaAbsoluta = c(0, tabla_intervalos$Freq, 0)
+)
+
+# Gráfico del polígono
+ggplot(poligono_datos, aes(x = MarcaClase, y = FrecuenciaAbsoluta)) +
+  geom_line(color = "blue", size = 1) +
+  geom_point(color = "red", size = 2) +
+  scale_x_continuous(breaks = seq(-5, 105, by = 10)) +
+  labs(
+    x = "Uso de CPU (%)",
+    y = "Frecuencia Absoluta"
+  ) +
+  theme_classic()
+```
+
+---
+
+## Pregunta 4: Mediana y Desviación Estándar de Latencia para WebAPI
+
+```{r pregunta-4}
+# Filtrado de latencia para WebAPI
+latencia_webapi <- datos %>%
+  filter(TipoEntorno == "WebAPI") %>%
+  pull(Latencia)
+
+# Cálculo de estadísticas
+mediana_webapi <- median(latencia_webapi)
+desv_std_webapi <- sd(latencia_webapi)
+
+cat("Mediana de Latencia (WebAPI):", round(mediana_webapi, 2), "ms\n")
+cat("Desviación Estándar de Latencia (WebAPI):", round(desv_std_webapi, 2), "ms\n")
+```
+
+---
+
+## Pregunta 5: Cuartil 1 y Decil 7 para Uso de RAM
+
+```{r pregunta-5}
+# Cálculo de Q1 y D7
+q1_ram <- quantile(datos$UsoRAM, probs = 0.25)
+d7_ram <- quantile(datos$UsoRAM, probs = 0.70)
+
+cat("Cuartil 1 (Q1) de Uso de RAM:", round(q1_ram, 2), "GB\n")
+cat("Decil 7 (D7) de Uso de RAM:", round(d7_ram, 2), "GB\n")
+```
+
+---
+
+## Pregunta 6: Diagrama de cajas para Tasa de Errores según EstadoServidor
+
+```{r pregunta-6}
+# Diagrama de caja
+ggplot(datos, aes(x = EstadoServidor, y = TasaErrores, fill = EstadoServidor)) +
+  geom_boxplot() +
+  labs(
+    title = "Distribución de Tasa de Errores según Estado del Servidor",
+    x = "Estado del Servidor",
+    y = "Tasa de Errores (%)"
+  ) +
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+---
+
+## Pregunta 7: Variabilidad relativa de Contenedores Activos (AWS vs Azure)
+
+```{r pregunta-7}
+# Filtrado por proveedor
+aws_contenedores <- datos %>% filter(ProveedorCloud == "AWS") %>% pull(ContenedoresActivos)
+azure_contenedores <- datos %>% filter(ProveedorCloud == "Azure") %>% pull(ContenedoresActivos)
+
+# Coeficiente de Variación CV = (sd / mean) * 100
+cv_aws <- (sd(aws_contenedores) / mean(aws_contenedores)) * 10

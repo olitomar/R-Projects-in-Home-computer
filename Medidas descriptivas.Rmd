@@ -1,0 +1,201 @@
+---
+title: "Medidas Descriptivas"
+author: "Helen Guillén O"
+date: "2026-03-16"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+**Contexto para el tema**
+En los últimos años, la inteligencia artificial (IA) ha transformado múltiples áreas, incluyendo la educación universitaria. Muchos estudiantes están comenzando a incorporar herramientas de IA en su proceso de aprendizaje y en sus tareas académicas, lo cual plantea preguntas sobre cómo y en qué medida afecta su rendimiento académico, su percepción de la tecnología y sus rutinas de estudio.
+
+Este estudio se enfoca en recopilar datos sobre el uso de la IA en estudiantes universitarios de diferentes áreas de estudio, edades, y niveles de conocimiento. Se pretende analizar cómo influyen ciertas variables, como el conocimiento previo de IA, la frecuencia y las horas de uso de estas herramientas, en el rendimiento académico y la percepción de su eficacia.
+
+Las variables recopiladas incluyen la cantidad de horas semanales que los estudiantes dedican a herramientas de IA, su conocimiento previo, y su percepción de la efectividad de estas herramientas en su aprendizaje. Además, se analiza si variables como el área de estudio, la cantidad de cursos matriculados y características personales (como edad y peso) presentan correlaciones significativas con su rendimiento académico, representado en la nota media con IA.
+
+Para esto considere la base de datos (Basedatos.xlxs) donde se incluye la información de 51 estudiantes universitarios en el país y se les consulto por las siguientes variables: 
+
+**Estudiante:** Identificación de cada estudiante (Est1, Est2, …, Est51).
+
+**Edad:** Edad del estudiante (entre 18 y 25 años).
+
+**Hora de uso semanal:** Horas dedicadas semanalmente al uso de IA (entre 0 y 20 horas).
+
+**Conocimiento de IA:** Nivel de conocimiento de IA del estudiante, clasificado en 1 (bajo), 2 (intermedio) y 3 (avanzado).
+
+**Frecuencia de uso:** Frecuencia de uso de IA en sus estudios (Clasificada en cuatro categorías: Diario, Semanal, Mensual y Rara vez.).
+
+**Área de uso:** Área en la que el estudiante más utiliza IA (Ej: Ciencias, Ingeniería, Humanidades, Negocios).
+
+**Sexo:** Sexo del estudiante ( “M” para masculino, “F” para femenino.).
+
+**Peso:** Peso del estudiante en kg (entre 50 y 90 kg).
+
+**Nota media con IA:** Nota media en sus asignaturas apoyadas por IA (escala de 6.0 a 10).
+
+**Percepción de eficacia:** Percepción de la eficacia de la IA en sus estudios (escala de 1 a 5).
+
+**Cantidad de cursos matriculados:** Número de cursos matriculados en la universidad (entre 3 y 6).
+
+**Lectura de datos**
+Para la lectura de datos de archivos de excel debemos iniciar con la instalacion de paquetes
+```{r}
+if(!require("readxl")){
+install.packages("readxl")
+library("readxl")
+}
+```
+
+y se realiza la lectura de la base de datos
+```{r}
+datos1<- read_excel("basedatos.xlsx")
+```
+
+
+**Promedio**
+```{r}
+media<-mean(datos1$Peso)
+cat("El peso promedio entre los estudiantes del estudio de la Universidad Nacional, Heredia en el I ciclo 2025 es de", media,"kg.")
+```
+
+**Mediana**
+```{r}
+mediana<-median(datos1$Peso)
+cat("El 50% de los estudiantes del estudio de la Universidad Nacional, Heredia en el I ciclo 2025 tienen pesos menores o iguales a", mediana,"kg.")
+```
+
+**Moda**
+```{r}
+if(!require("modeest")){
+install.packages("modeest")
+library("modeest")
+}
+
+moda<-mfv(datos1$Frecuenciadeuso)
+cat("La frecuencia de uso del IA más frecuente entre los estudiantes del estudio de la Universidad Nacional, Heredia en el I ciclo 2025 es de:", moda)
+
+```
+
+*Ejercicio* Determine e interprete la mediana, moda y media para la variable *Hora de uso semanal*
+
+```{r}
+media1<-mean(datos1$Horadeusosemanal)
+mediana1<-median(datos1$Horadeusosemanal)
+moda1<-mfv(datos1$Horadeusosemanal)
+cat("el promedio de horas de uso semanal de IA de los estudiantes del estudio de la Universidad Nacional, Heredia en el I ciclo 2025 es de", media1,"horas.
+    
+    ")
+cat("El 50% de los estudiantes del estudio de la Universidad Nacional, Heredia en el I ciclo 2025 usan a la semana la IA ", mediana1,"o menos horas.
+    
+    ")
+cat("La cantidad de horas más frecuente de uso semanal de la IA de los estudiantes del estudio de la Universidad Nacional, Heredia en el I ciclo 2025 es de", moda1,"horas.
+    
+    ")
+```
+
+
+**Percentiles**
+
+```{r}
+#quantile(x,probs=m,na.rm=TRUE)
+
+percentil75<-quantile(datos1$Peso,probs=75/100,na.rm=TRUE) 
+
+#interpretacion del percentil 75
+cat("El 75% de los estudiantes del estudio de la Universidad Nacional, Heredia en el I ciclo 2025 tienen pesos menores o iguales a", percentil75,"kg.")
+
+
+quantile(datos1$Peso,probs=c(5/100,25/100,70/100),na.rm=TRUE)
+
+```
+
+
+*Ejercicio*
+Determine e interprete el percentil 3, 15,80, 90 y decil 7 para la varible *nota promedio*.
+
+
+```{r}
+percentil3<-quantile(datos1$NotamediacoIA,probs=3/100,na.rm=TRUE) 
+percentil15<-quantile(datos1$NotamediacoIA,probs=15/100,na.rm=TRUE) 
+
+percentil80<-quantile(datos1$NotamediacoIA,probs=80/100,na.rm=TRUE) 
+
+percentil90<-quantile(datos1$NotamediacoIA,probs=90/100,na.rm=TRUE) 
+
+percentil70<-quantile(datos1$NotamediacoIA,probs=70/100,na.rm=TRUE) 
+
+cat("El 3% de los estudiantes del estudio de la Universidad Nacional, Heredia en el I ciclo 2025 tienen notas medias menores o iguales a", percentil3,"puntos.
+    
+    ")
+
+
+cat("El 15% de los estudiantes del estudio de la Universidad Nacional, Heredia en el I ciclo 2025 tienen notas medias menores o iguales a", percentil15,"puntos.
+    
+    ")
+
+cat("El 80% de los estudiantes del estudio de la Universidad Nacional, Heredia en el I ciclo 2025 tienen notas medias menores o iguales a", percentil80,"puntos.
+    
+    ")
+cat("El 90% de los estudiantes del estudio de la Universidad Nacional, Heredia en el I ciclo 2025 tienen notas medias menores o iguales a", percentil90,"puntos.
+    
+    ")
+cat("El 70% de los estudiantes del estudio de la Universidad Nacional, Heredia en el I ciclo 2025 tienen notas medias menores o iguales a", percentil70,"puntos.
+    
+    ")
+```
+
+**Varianza**
+```{r}
+var(datos1$Peso)
+```
+
+**Desviación estandar**
+```{r}
+sd(datos1$Peso)
+```
+
+**Coeficiente de variación**
+```{r}
+CV1<-sd(datos1$Peso,na.rm=TRUE)/mean(datos1$Peso,na.rm=TRUE)*100
+
+CV2<-sd(datos1$NotamediacoIA,na.rm=TRUE)/mean(datos1$NotamediacoIA,na.rm=TRUE)*100
+
+if (CV1>CV2){
+  print("El Peso es más variable")
+} else{
+  print("Las notas medias son más variable")
+  }
+```
+
+
+**Resumen de medidas**
+Hay dos funciones que resultan especialmente útiles: la función summary() y la función fivenum(). Ambas funciones ofrecen un resumen de los parámetros de posición más importantes.
+
+Si la variable es cuantitativa, la función summary() nos proporciona el mínimo, el máximo, el primer y tercer cuartil, la mediana, la media y el número de datos faltantes, si los hay:
+```{r}
+summary(datos1$Peso)
+```
+
+La función fivenum() muestra los Tukey Five-Number, o sea, nos proporciona también el mínimo, el máximo, el primer y tercer cuartil y la mediana, sólo si la variable es cuantitativa:
+
+```{r}
+fivenum(datos1$Peso)
+```
+Diagramas de cajas: boxplot() Para la construcción del diagrama de cajas se puede utilizar el comando
+boxplot.
+```{r}
+boxplot(datos1$Peso~datos1$Sexo,ylab = "Sexo",
+main="Grafico N°16.
+Distribución de estudiantes según peso
+Consultorio de odontología, Belén, Enero 2016.",
+xlab ="Peso", horizontal = T,cex.axis=0.70,
+sub = "Fuente: Dr. Carlos Eduardo Méndez Castro",
+las=1,col = c("lightblue","lightpink"),
+        cex.main = 1.1,
+        cex.lab = 1,
+        pch = 19,names = c("Mujeres","Hombres"),
+mgp = c(2,0.8,0.1))
+
+```
+

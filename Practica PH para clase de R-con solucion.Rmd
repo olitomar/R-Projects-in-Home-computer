@@ -1,0 +1,306 @@
+---
+title: "Pruebas de Hipotesis RStudio"
+author: 'Profesora: Helen Guillén Oviedo'
+date: "2024-05-23"
+output:
+  html_document: default
+  pdf_document: default
+---
+*Pruebas de hipotesis para la media*
+
+*Ejemplo*
+Con el fin de estudiar el número medio de flexiones continuas que pueden realizar sus alumnos, un profesor de educación física somete a 75 de ellos, elegidos aleatoriamente, a una prueba. El número de flexiones realizado por cada alumno, así como su sexo y si realizan o no deporte fuera del horario escolar se muestran en el fichero *Flexiones.txt.*
+Lectura de datos
+```{r}
+if(!require("readxl")){
+install.packages("readxl")
+library("readxl")
+}
+datos<- read_excel("Flexiones.xlsx")
+length(datos$Flexiones)
+summary(datos)
+```
+
+*Ejemplo 1 *
+Se sabe que el número de flexiones se distribuye según una Normal de varianza poblacional 7.5. ¿Puede asumirse, considerando un nivel de significación del 5%, que el número medio de flexiones que realizan los alumnos es de 55?
+
+solución:
+1. mu= número medio de flexiones 
+
+2. mu=55
+3 Ho:mu=55
+  H1:mu != 55  *(importante)* "two.sided" (dos colas)
+
+Todas las opciones son “two.sided” (distinto), “less” (menor), “greater” (mayor)
+
+Cargar el paquete *install.packages("BSDA")*
+Luego planteamos las pruebas
+```{r}
+if(!require("BSDA")){
+install.packages("BSDA")
+library("BSDA")
+}
+z.test(x=datos$Flexiones,y=NULL,alternative="two.sided",mu=55,sigma.x=sqrt(7.5),sigma.y=NULL,conf.level=0.95)
+
+```
+p-valor=0.00000025 <0.05=alpha
+Conclusion: se rechaza la hipotesis nula
+
+interpretación: con un nivel de significancia del 5% existe suficiente evidencia estadistica para concluir que el número medio de flexiones que realizan los alumnos es distinta de 55.
+
+*Ejemplo2*
+Caso2: Desviación estandar poblacional desconocida, muestras grandes.
+
+Suponga para el mismo ejemplo que la varianza poblacional es deconocida.
+
+identificar las hipotesis para tener la hipotesis alterna.
+1. mu= número medio de flexiones 
+
+2. mu=55
+3 Ho:mu=55
+  H1:mu != 55  *(importante)* "two.sided" (dos colas)
+Dado que n=75>30 entonces se sigue una distrbucion normal para el estadístico de prueba.
+```{r}
+if(!require("BSDA")){
+install.packages("BSDA")
+library("BSDA")
+}
+z.test(x=datos$Flexiones,y=NULL,alternative="two.sided",mu=55,
+       sigma.x=sd(datos$Flexiones),sigma.y=NULL,conf.level=0.95)
+```
+
+p-valor=0.0000084 <0.01=alpha
+Conclusion: se rechaza la hipotesis nula
+
+Interpretación: con un nivel de significancia del 5% existe suficiente evidencia estadistica para concluir que el número medio de flexiones que realizan los alumnos es distinto de 55.
+
+
+*Ejercicio 1:*
+Se desea contrastar con un nivel de significancia del 5% la hipótesis de que la estatura media de los hombres de 18 o más años de un país es menor que 175 cm. Suponiendo que la desviación estándar es de 4.5. Para dicha prueba se recolectaron los datos que constituyen una muestra de n=14 hombres seleccionados al azar, cuyas alturas en cm son: 167 167 168 168 168 169 171 172 173 175 175 175 177 182.
+suponiendo que la poblacion se distribuye de manera normal.
+
+1. mu: estatura media de los hombres de 18 o más años.
+
+2. mu<175
+
+3. H_0:mu>=175
+   H_1:mu<175
+   
+```{r}
+if(!require("BSDA")){
+install.packages("BSDA")
+library("BSDA")
+}
+x<-c(167,167,168,168,168,169,171,172,173,175,175,175,177,182)
+z.test(x,y=NULL, alternative="less", mu=175,sigma.x=4.5 ,sigma.y=NULL, conf.level=0.95)
+```
+p-valor=0.005327<0.05=alpha
+se rechaza H0
+
+*Interpretación:* 
+Con un nivel de significancia del 5%, existe suficiente evidencia estadistica para concluir que la estatura media de los hombres de 18 o más años es menor a 175 cm.
+
+
+*Ejercicio 2:*
+Cierta cadena de almacenes de descuentos emite su propia tarjeta de credito. La gerente de credito, desea descubrir si el promedio sin pagar mensual es más de $405. El nivel de significancia se fija en 0.01.Para ello se tomo una muestra de 39 datos, los cuales se muestran a continuacion:
+395,400,410,415,400,398,403,390,389,391,406,412,403,400,396,410,404,410,420,405,406,418,397,395,408,400,409,419,417,402,405,400,414,399,411,405,412,418,413.
+¿Debe la gerente concluir que el promedio sin pagar mensual de la poblacion es mayor a $405?
+
+1. mu: promedio sin pagar mensual en tarjetas de credito
+
+2. mu>405
+
+3. H_o: mu<=405
+   H_1: mu>405
+   
+```{r}
+if(!require("BSDA")){
+install.packages("BSDA")
+library("BSDA")
+}
+x<-c(395,400,410,415,400,398,403,390,389,391,406,412,403,400,396,410,404,410,420,405,406,418,397,395,408,400,409,419,417,402,405,400,414,399,411,405,412,418,413)
+length(x)
+z.test(x,y=NULL, alternative="greater", mu=405,sigma.x=sd(x) ,sigma.y=NULL)
+```
+p-value = 0.4237>0.01=alpha
+Conclusión: No se rechaza
+interpretación: Con un nivel de significancia del 1% no existe suficiente evidencia estadística para concluir que el promedio sin pagar mensual de la poblacion es mayor a $405.
+
+
+*Caso3: Desviación estándar poblacional desconocida, muestras pequeñas*
+
+*Ejemplo:*
+Una compañía ferroviaria canadiense afirma que sus trenes de mercancías no bloquean los pasos a nivel durante más de 8 minutos, en promedio. Una muestra aleatoria de 10 tiempos de bloqueo dio como resultado estos valores (en minutos): 
+
+*10.1, 9.5, 6.5, 8.0, 8.8, 12, 7.2, 10.5, 8.2, 9.3. *
+
+Bajo un nivel de significancia del 1%.
+
+Realice la prueba de hipotesis. Se asume que la distribucion de los datos es normal.
+
+1. mu: tiempo promedio que los trenes no bloquean los pasos a nivel.
+
+2. m>8
+H_o:mu<=8
+H_1:mu>8
+```{r}
+if(!require("BSDA")){
+install.packages("BSDA")
+library("BSDA")
+}
+datos1=c(10.1, 9.5, 6.5, 8.0, 8.8, 12, 7.2, 10.5, 8.2, 9.3)
+length(datos1)
+#Se verifica normalidad de los datos.
+qqnorm(datos1,col="blue",xlab="Eje z",ylab="Tiempo", main="trenes de mercancia"); qqline(datos1,col="red")
+
+t.test(datos1,mu=8,alternative="greater")
+```
+p-value = 0.04101>0.01=alpha
+
+No se rechaza H0
+
+Conclusion:Con un nivel de significancia del 1%, no existe suficiente evidencia estadística para concluir que los trenes de mercancías no bloquean los pasos a nivel durante más de 8 minutos.
+
+**Inferencias Basadas en dos Muestras. Procedimientos de Prueba para la Diferencia de medias**
+
+
+**CASO I: POBLACIONES NORMALES CON VARIANZAS CONOCIDAS o muestras grandes.**
+
+Ejemplo: Dos ciclistas compiten para saber quién de los dos es más rápido y entrenan a diario de la misma forma, cada día recorren 15 kilómetros durante un mes. El dato promedio del tiempo para el ciclista 1 es de 122 y para el ciclista 2 es 120.
+
+Varias personas afirman que el ciclista 2 ganara la carrera, a un nivel de significancia del 5% comprobar las especulaciones de las personas asumiento una varianza igual para ambos ciclistas.
+
+Ciclista1:(130,129,130,124,124,122,130,125,126,123,130,126,125,128,125,125,125,125,125,125,130,123,120,122,125,123,122,127,120,121,122) 
+
+Ciclista2:(128,130,125,125,127,123,130,125,124,123,130,125,125,129,125,125,125,124,125,125,130,122,121,121,125,125,122,128,121,125,122)
+
+
+1. mu_1:tiempo promedio del ciclista 1
+   Mu_2:tiempo promedio del ciclista 2
+
+2. mu_2< mu_1   es lo mismo que mu_1 > mu_2
+
+3. H_0:mu_2>=mu_1
+   H_1:mu_2<mu_1  (mu_2-mu_1<0)  
+   
+```{r}
+ciclista_1<-c(130,129,130,124,124,122,130,125,126,123,130,126,125,128,125,125,125,125,125,125,130,123,120,122,125,123,122,127,120,121,122)
+ciclista_2 <- c(128,130,125,125,127,123,130,125,124,123,130,125,125,129,125,125,125,124,125,125,130,122,121,121,125,125,122,128,122,121,125)
+
+boxplot(ciclista_1,ciclista_2,main="Comparacion de recorrido",ylab="Kilometros",col="Orange")
+
+
+```
+Ahora que sabemos que las varianzas son desconocidas y que podemos asumir que son normales sus poblaciones con varianzas iguales realizaremos la prueba de hipotesis:
+
+H_1:mu_2<mu_1  (mu_2-mu_1<0)
+
+
+```{r}
+if(!require("BSDA")){
+install.packages("BSDA")
+library("BSDA")
+}
+z.test(x=ciclista_2,y=ciclista_1,alternative="less",mu=0,sigma.x=sd(ciclista_2),sigma.y=sd(ciclista_1),conf.level=0.95)
+```
+p-values=0.5528>0.05=alpha
+no se rechaza la hipotesis nula
+Interpretación: Con un nivel de significancia del 5% no existe suficiente evidencia estadística para concluir que el ciclista 2 ganará la carrera.
+
+
+**CASO II: POBLACIONES NORMALES CON VARIANZAS DESCONOCIDAS PERO IGUALES Y MUESTRAS PEQUEÑAS.**
+
+Ejemplo: Un dueño de una fábrica tiene un pedido muy grande y para llevarlo a cabo necesita conocer cuál de las dos máquinas para realizar el proceso trabaja con mayor velocidad, el intuye que la maquina 2 es más efectiva y para ello hace una prueba, toman el tiempo de fabricación en minutos de 10 productos en cada máquina. Los resultados son:
+
+maquina_1 <- c(14,13,15,14,17,16,15,16,13,17)
+maquina_2 <- c(16,15,14,17,12,17,15,16,15,14)
+
+¿Es posible que la maquina 2 tenga un mejor tiempo de producción que la maquina 1 usando un nivel de significancia de 0.05?
+
+1. 
+ mu_1:Tiempo medio de produccion de la maquina 1
+ mu_2:Tiempo medio de produccion de la maquina 2
+
+
+2. m_2 < m_1
+
+3. H_0:mu_2>=mu_1
+   H_1:mu_2<mu_1  (mu_2-mu_1<0) 
+   
+```{r}
+maquina_1 <- c(14,13,15,14,17,16,15,16,13,17)
+maquina_2 <- c(16,15,14,17,12,17,15,16,15,14)
+
+```
+Ahora veremos si nuestras muestras son normales:
+
+```{r}
+qqnorm(maquina_1,col="blue",xlab="Eje z",ylab="Tiempo", main="Maquina 1"); qqline(maquina_1,col="red")
+
+qqnorm(maquina_2,col="blue",xlab="Eje z",ylab="Tiempo", main="Maquina 2"); qqline(maquina_2,col="red")
+```
+Una vez comprobado que son normales, usaremos nuestra prueba de hipótesis, donde nuestra hipótesis alternativa.
+H_1:mu_2<mu_1 
+```{r}
+t.test(x=maquina_2,y=maquina_1,alternative="less",mu=0,var.equal=TRUE,conf.level=0.95)
+```
+p=value=0.55>0.05=alpha
+no se rechaza H_0
+Conclusión:Con un nivel de significancia del 5% no existe suficiente evidencia estadistica para concluir que la maquina 2 tiene un mejor tiempo de producción que la maquina 1. 
+
+
+**Prueba de hipotesis para proporciones*
+Considerando nuevamente el conjunto de datos que se ha presentado en el Supuesto práctico1, relativo al número de flexiones y el sexo de los alumnos. 
+
+Contrastar a un nivel de confianza del 95%, si la proporción de alumnos varones es mayor o igual que 0.5 frente a que dicha proporción es menor. El fichero es Flexiones.txt.
+
+```{r}
+if(!require("readxl")){
+install.packages("readxl")
+library("readxl")
+}
+datos<- read_excel("Flexiones.xlsx")
+table(datos$Sexo)
+```
+P:PROPORCIÓN DE ALUMNOS QUE SON HOMBRES
+
+H_0:P>=0.5
+
+H_1:P<0.5
+
+```{r}
+datos$Sexo
+x<-length(which(datos$Sexo=="H"))
+x
+n<-length(datos$Sexo)
+prop.test(x,n,p=0.5,alternative="less", conf.level = 0.95)
+```
+
+
+
+P: proporcion de llamadas de emergencias de vida o muerte recibidas en el servicio de ambulancia
+
+P>=0.4
+
+H_0: P >= 0.4
+H_1: P < 0.4
+
+
+Zc=-1.83333
+
+z_alpha=-2.3263
+
+Para rechazar se debe cumplir que zc< z_alpha y esto no ocurre
+conclusion: No se rechaza la HO
+
+Inter: Con un nivel de significancia del 1% no existe suficiente evidencia estadistica para rechazar que la proporcion de llamadas de vida o muerte recibidas por el servicio de ambulancias es al menos el 40%.
+
+
+Con un nivel de significancia del 1% no existe suficiete evidencia estadistica para concluir que la proporcion de llamadas de vida o muerte recibidas por el servicio de ambulancias es menor al 40%.
+
+
+```{r}
+zc=(49/150 - 0.4)/(sqrt((0.4*0.6)/150))
+zc
+qnorm(0.01)
+```

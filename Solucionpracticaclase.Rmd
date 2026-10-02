@@ -1,0 +1,60 @@
+---
+title: "Solución práctica"
+author: 'Profesora: Helen Guillén Oviedo'
+date: "2025-05-06"
+output: html_document
+---
+
+*Lectura de datos*
+```{r}
+load("estimacion.rdata")
+```
+
+**Ejercicio 1**
+Se tiene una variable (salarios) que recoge información sobre el salario mensual de 20 trabajadores elegidos al azar de una empresa multinacional.
+Suponiendo que dicho salario se distribuye normal con desviación típica 400€, obtenga un intervalo de confianza al 95% para el salario medio mensual e interprételo.
+
+
+identificar en el caso que estamos.
+1. poblacion infinita
+2. Desviación estandar población es conocida (400 euros)
+3. la muestra es pequeña, pero la población es normal.
+
+entonces estamos en el caso 1 de distribucion normal
+
+
+```{r}
+if(!require("BSDA")){
+install.packages("BSDA")
+library("BSDA")
+}
+z.test(salarios,sigma.x=400,conf.level=0.95)$conf
+
+```
+
+**Ejercicio 2**
+Se tiene el beneficio semestral (en miles de euros) de diez pequeñas empresas, obtenga un intervalo de confianza al 99% para el beneficio medio semestral de ese tipo de empresas
+(suponiendo normalidad).
+
+Tenemos:
+1. población normal
+2. desviación poblacional desconocida
+3. muestra pequeña
+
+entonces usamos distribucion T-student
+```{r}
+t.test(beneficio, conf.level = 0.99)$conf
+
+```
+
+**Ejercicio 3**
+A partir de los datos de una encuesta se pretende estimar la proporción de personas que poseen una visión optimista del futuro con un intervalo de confianza al 96%.
+Los datos se encuentran en el objeto futuro, correspondiendo el valor 1 a aquellos individuos que tienen una visión optimista del futuro y el valor 0 al resto.
+
+Es el caso de proporciones, con un tamaño de muestra de 200.
+```{r}
+futuro
+x<-length(which(futuro==1))
+n <- length(futuro)
+prop.test(x, n, conf.level = 0.96)$conf
+```

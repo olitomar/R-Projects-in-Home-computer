@@ -1,0 +1,224 @@
+---
+title: "Valeria.Lopez.Lab1"
+author: "Valeria López"
+date: "2026-09-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Laboratorio 1
+
+Lectura de los datos
+
+```{r lectura-datos}
+library(readxl)
+
+datos <- read_excel("BaseDatosServidores.xlsx")
+
+head(datos)
+
+str(datos)
+```
+
+Pregunta 1: Utilice la información de la base de datos para construir un cuadro de
+distribución de frecuencias que resuma la información correspondiente a la variable Estado
+del Servidor, tome en cuenta que el cuadro deberá incluir solamente tres columnas: variable
+(clase), frecuencias absolutas simples y porcentajes. Incluya TODOS los elementos o
+componentes de presentación vistos en clase que debe tener cualquier representación de
+información para facilitar la lectura.
+
+```{r pregunta1}
+# Frecuencias absolutas
+frecuencias <- table(datos$EstadoServidor)
+
+# Porcentajes
+porcentajes <- prop.table(frecuencias) * 100
+
+# Construcción de la tabla
+tabla_estado <- data.frame(
+  Variable = names(frecuencias),
+  Frecuencia = as.vector(frecuencias),
+  Porcentaje = round(as.vector(porcentajes), 2)
+)
+
+# Agregar total
+tabla_estado <- rbind(
+  tabla_estado,
+  data.frame(
+    Variable = "Total",
+    Frecuencia = sum(tabla_estado$Frecuencia),
+    Porcentaje = sum(tabla_estado$Porcentaje)
+  )
+)
+
+tabla_estado
+```
+
+
+Pregunta 2: Construya un gráfico que represente la información de la variable Nivel de
+Carga según Tipo de Entorno. Debe cuidar que la presentación del gráfico sea adecuada,
+pero no debe incluir TODOS los elementos o componentes de presentación vistos en clase
+que debe tener cualquier gráfico.
+
+```{r pregunta2}
+# Tabla de contingencia
+tabla_carga <- table(datos$TipoEntorno, datos$NivelCarga)
+
+tabla_carga
+
+```
+```{r pregunta2-grafico}
+# Gráfico
+barplot(
+  tabla_carga,
+  beside = TRUE,
+  main = "Nivel de carga según tipo de entorno",
+  xlab = "Tipo de entorno",
+  ylab = "Frecuencia",
+  col = c("lightblue", "lightgreen", "lightcoral"),
+  legend.text = colnames(tabla_carga)
+)
+```
+
+Pregunta 3: Construya un Polígono de frecuencias absolutas para representar la Variable
+Uso de CPU, el ancho de las clases debe ser de 10, no debe tener elementos de
+presentación, pero sí debe ser legible el gráfico y cumplir con las características de un
+polígono de frecuencias absolutas.
+
+```{r pregunta3}
+# Determinar límites de clases con amplitud 10
+limite_inferior <- floor(min(datos$UsoCPU, na.rm = TRUE) / 10) * 10
+limite_superior <- ceiling(max(datos$UsoCPU, na.rm = TRUE) / 10) * 10
+
+# Crear intervalos
+intervalos <- seq(limite_inferior, limite_superior, by = 10)
+
+# Clasificar los datos
+clases_cpu <- cut(
+  datos$UsoCPU,
+  breaks = intervalos,
+  right = FALSE,
+  include.lowest = TRUE
+)
+
+# Frecuencias absolutas
+frecuencias_cpu <- table(clases_cpu)
+
+frecuencias_cpu
+```
+
+```{r pregunta3-poligono}
+# Marcas de clase
+marcas <- head(intervalos, -1) + 5
+
+# Cerrar el polígono
+marcas_poligono <- c(marcas[1] - 10, marcas, marcas[length(marcas)] + 10)
+frecuencias_poligono <- c(0, as.vector(frecuencias_cpu), 0)
+
+# Crea Polígono de frecuencias
+plot(
+  marcas_poligono,
+  frecuencias_poligono,
+  type = "o",
+  xlab = "",
+  ylab = ""
+)
+```
+
+Pregunta 4: Calcule la Mediana y desviación estándar para la variable Latencia para Tipo de
+Entorno: WebAPI.
+
+```{r pregunta4}
+# Filtrar servidores WebAPI
+webapi <- subset(datos, TipoEntorno == "WebAPI")
+
+# Calcular mediana
+mediana_latencia <- median(webapi$Latencia, na.rm = TRUE)
+
+# Calcular desviación estándar
+desviacion_latencia <- sd(webapi$Latencia, na.rm = TRUE)
+
+# Mostrar resultados
+mediana_latencia
+desviacion_latencia
+```
+
+Pregunta 5: Calcule el cuartil 1 y el decil 7 para la variable Uso de RAM.
+
+```{r pregunta5}
+# Primer cuartil
+Q1 <- quantile(datos$UsoRAM, probs = 0.25, na.rm = TRUE)
+
+# Séptimo decil
+D7 <- quantile(datos$UsoRAM, probs = 0.70, na.rm = TRUE)
+
+# Mostrar resultados
+Q1
+D7
+
+```
+
+El **primer cuartil (Q1)** indica el valor de uso de RAM por debajo del cual se encuentra aproximadamente el 25% de los servidores.
+
+El **séptimo decil (D7)** indica el valor de uso de RAM por debajo del cual se encuentra aproximadamente el 70% de los servidores.
+
+
+Pregunta 6: Construya un diagrama de cajas para la variable Tasa de Errores según Estado
+del Servidor. Debe cuidar que la presentación del gráfico sea adecuada, pero no debe
+incluir TODOS los elementos o componentes de presentación vistos en clase que debe
+tener cualquier gráfico. 
+
+```{r pregunta6}
+boxplot(
+  TasaErrores ~ EstadoServidor,
+  data = datos,
+  main = "Tasa de errores según estado del servidor",
+  xlab = "Estado del servidor",
+  ylab = "Tasa de errores (%)"
+)
+```
+
+Pregunta 7: Determine cuál de las dos variables tiene mayor variabilidad relativa, el Número
+de Contenedores Activos para los que tienen Proveedor Cloud: AWS o Número de
+Contenedores Activos para los que tienen Proveedor Cloud: Azure.
+
+```{r pregunta7}
+# Datos de AWS
+aws <- subset(datos, ProveedorCloud == "AWS")
+
+# Datos de Azure
+azure <- subset(datos, ProveedorCloud == "Azure")
+
+# Estadísticos AWS
+media_aws <- mean(aws$ContenedoresActivos, na.rm = TRUE)
+sd_aws <- sd(aws$ContenedoresActivos, na.rm = TRUE)
+cv_aws <- (sd_aws / media_aws) * 100
+
+# Estadísticos Azure
+media_azure <- mean(azure$ContenedoresActivos, na.rm = TRUE)
+sd_azure <- sd(azure$ContenedoresActivos, na.rm = TRUE)
+cv_azure <- (sd_azure / media_azure) * 100
+
+# Tabla de resultados
+tabla_cv <- data.frame(
+  Proveedor = c("AWS", "Azure"),
+  Media = c(media_aws, media_azure),
+  DesviacionEstandar = c(sd_aws, sd_azure),
+  CoeficienteVariacion = c(cv_aws, cv_azure)
+)
+
+tabla_cv
+```
+
+```{r pregunta7-conclusion}
+if (cv_aws > cv_azure) {
+  cat("AWS presenta mayor variabilidad relativa.\n")
+} else {
+  cat("Azure presenta mayor variabilidad relativa.\n")
+}
+```
+
+

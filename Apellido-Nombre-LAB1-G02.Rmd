@@ -1,0 +1,105 @@
+---
+title: "Laboratorio 1 G02"
+author: 'Profesora: Helen Guillén Oviedo'
+date: "2025-03-26"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+**Total: 40 puntos**
+
+**Nombre de Estudiante:**
+Yerlin Oporta Madrigal
+
+Resuelva cada una de las siguientes preguntas según el contexto planteado.
+
+**Lectura de datos**
+Antes de iniciar se debe hacer la lectura de los datos.(2 puntos)
+
+```{r}
+if(!require("readxl")){
+install.packages("readxl")
+library("readxl")
+}
+DatosAgua <- read_excel("BaseDatosAgua.xlsx")
+```
+
+**Pregunta 1:**
+Utilice la información de la base de datos para construir una tabla de contingencia que resuma la información correspondiente a la variable *Fuente de Contaminación* según *Tipo de Agua*. Incluya TODOS los elementos o componentes de presentación vistos en clase que debe tener cualquier representación de información para facilitar la lectura. (7 puntos)
+
+```{r}
+
+```
+
+
+**Pregunta 2:**
+Construya un Gráfico que represente la información de la variable *Nivel de Contaminación*. Debe cuidar la presentación del Gráfico sea adecuada, pero no debe incluir TODOS los elementos o componentes de presentación vistos en clase que debe tener cualquier gráfico. (6 puntos)                    
+
+```{r}
+# install.packages(c("readxl", "ggplot2"))
+library(readxl)
+library(ggplot2)
+
+datos <- read_excel("BaseDatosAgua.xlsx")
+datos$Nivelcont <- factor(datos$Nivelcont, levels = c("Natural", "Industrial", "Agricola"))
+
+ggplot(datos, aes(x = Nivelcont)) +
+  geom_bar(fill = "skyblue") +
+  labs(title = "Distribución de las muestras de agua según nivel de contaminación",
+       x = "Nivel de contaminación",
+       y = "Número de muestras") +
+  theme_minimal()
+```
+**Pregunta 3:**
+Construya una ojiva para representar la Variable *Concentración de Nitratos*, el ancho de las clases debe ser de *3*. no debe tener elementos de presentación, pero si debe ser legible el grafico y cumplir con las caracteristicas de una ojiva. (6 puntos)
+
+```{r}
+
+
+```
+
+
+
+**Pregunta 4:**
+Calcule el promedio y varianza para la variable *Cantidad de Residuos * en la *calidad de agua: Buena*. (4 puntos)
+
+```{r}
+
+
+# calidad de agua Buena
+buena <- subset(datos, CalAgua == "Buena")
+
+mean(buena$Residuos)   
+var(buena$Residuos)    
+
+
+
+```
+
+
+**Pregunta 5:**
+Calcule el cuartil 2 y el decil 4 para la variable *Oxígeno Disuelto *. (4 puntos)
+
+```{r}
+
+quantile(datos$OxígenoDisuelto, probs = 0.5)   
+quantile(datos$OxígenoDisuelto, probs = 0.4)  
+
+```
+
+
+**Pregunta 6:**
+Construya un diagrama de cajas para la variable **Oxígeno Disuelto** según **Nivel de contaminación**. Debe cuidar la presentación del gráfico sea adecuada, pero no debe incluir TODOS los elementos o componentes de presentación vistos en clase que debe tener cualquier gráfico (6 puntos)
+```{r}
+
+
+```
+
+**Pregunta 7:**
+Determine cual de las dos variables tienen mayor variabilidad relativa, la *Cantidad de Residuos para los que tienen Nivel de Contaminación medio* o *Cantidad de Residuos para los que tienen Nivel de Contaminación alto*. (5 puntos)
+
+```{r}
+
+
+```
